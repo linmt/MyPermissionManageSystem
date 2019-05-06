@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--scan：为true时，当配置文件发生改变，会重新加载，默认为true-->
+<!--scanPeriod：配置文件修改的时间间隔，默认单位ms，如果为true，默认1分钟-->
+<configuration scan="true" scanPeriod="60 seconds">
+    <!--appender、logger可以有多个，但是root只能有一个-->
+
+    <!--这样配置代表这个appender对所有logger都有效-->
+    <!--每个appender定义一种log的输出形式，STDOUT标准化输出-->
+    <!--ConsoleAppender：将日志文件直接输出到控制台上，用Tomcat时，写入catalina.out文件中，通常我们所有的日志文件都会输出一份到catalina.out-->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!--
+            [%thread]：当前的进程
+            %-5level：日志级别，-5从左显示5个宽度字符，为了对齐
+            %logger：日志名称
+            %msg：实际的信息
+            %n：换行
+            -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--RollingFileAppender会对日志进行压缩、归档并生成新的日志文件-->
+    <!--<appender name="permission" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+        <!--&lt;!&ndash;${catalina.home}定位到Tomcat的主路径&ndash;&gt;-->
+        <!--<file>${catalina.home}/logs/permission.log</file>-->
+        <!--&lt;!&ndash;TimeBasedRollingPolicy：根据时间进行日志压缩&ndash;&gt;-->
+        <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+            <!--&lt;!&ndash;压缩后的日志名称&ndash;&gt;-->
+            <!--<FileNamePattern>${catalina.home}/logs/permission.%d{yyyy-MM-dd}.log.gz</FileNamePattern>-->
+        <!--</rollingPolicy>-->
+        <!--<layout class="ch.qos.logback.classic.PatternLayout">-->
+            <!--<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>-->
+        <!--</layout>-->
+    <!--</appender>-->
+
+    <!--通常一个logger会指定一个appender-->
+    <!--<logger name="xxx" level="INFO">-->
+        <!--<appender-ref ref="permission"/>-->
+    <!--</logger>-->
+
+    <!-- 指定日志的级别：TRACE < DEBUG < INFO < WARN < ERROR，当配置了INFO时，TRACE和DEBUG就不会输出了 -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!--在mybatis的org.apache.ibatis.session.Configuration类中定义了很多有默认值的常量，-->
+    <settings>
+        <setting name="safeRowBoundsEnabled" value="true"/>
+        <!--是否缓存SQL-->
+        <setting name="cacheEnabled" value="false" />
+        <!--是否自动生成主键id-->
+        <setting name="useGeneratedKeys" value="true" />
+    </settings>
+
+    <!--本地的类在SQL中使用时可以用别名代替-->
+    <!--<typeAliases>-->
+        <!--<typeAlias type="这是本地的一个类" alias="这是别名" />-->
+    <!--</typeAliases>-->
+
+    <!-- 相当于在mybatis中做一些监听，比如说SQL如何执行，执行时间等，在SQL执行前后做一些别的事情 -->
+    <!--<plugins>-->
+        <!--<plugin interceptor=""></plugin>-->
+    <!--</plugins>-->
+
+    <!--处理类和SQL不能映射的情况-->
+    <!--<typeHandlers>-->
+        <!--<typeHandler handler=""></typeHandler>-->
+    <!--</typeHandlers>-->
+</configuration>
