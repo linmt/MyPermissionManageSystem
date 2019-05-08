@@ -4,18 +4,14 @@ import com.mmall.common.ApplicationContextHelper;
 import com.mmall.common.JsonData;
 import com.mmall.dao.SysAclModuleMapper;
 import com.mmall.exception.ParamException;
-import com.mmall.exception.PermissionException;
 import com.mmall.model.SysAclModule;
 import com.mmall.param.TestVo;
 import com.mmall.util.BeanValidator;
 import com.mmall.util.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.MapUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.Map;
 
 @Controller
 @RequestMapping("/test")
@@ -29,13 +25,16 @@ public class TestController {
 //        return "hello,permission";
 //    }
 
+    //不管是自定义异常、运行异常、Exception，都是在浏览器空白页显示错误信息{"ret":false,"msg":"System error","data":null}
+    //为什么运行时异常、Exception没有跳转到error.jsp???
     @RequestMapping("/hello.json")
     @ResponseBody
-    public JsonData hello() {
+    public JsonData hello() throws Exception {
         log.info("hello");
-        throw new PermissionException("test exception");
+//        throw new PermissionException("test exception");
 //         return JsonData.success("hello, permission");
 //        throw new RuntimeException("test RuntimeException");
+        throw new Exception("test Exception");
     }
 
     @RequestMapping("/hellopage.page")
@@ -55,22 +54,22 @@ public class TestController {
     http://localhost:8080/test/validate.json?id=1&msg=hello
     2019-02-16 17:17:51.075 ["http-apr-8080"-exec-7] INFO  com.mmall.controller.TestController - validate
      */
-    @RequestMapping("/validate.json")
-    @ResponseBody
-    public JsonData validate(TestVo vo) {
-        log.info("validate");
-        try {
-            Map<String,String> map=BeanValidator.validateObject(vo);
-            if(map!=null&&map.entrySet().size()>0){
-                for(Map.Entry<String,String> entry:map.entrySet()){
-                    log.info("{}->{}",entry.getKey(),entry.getValue());
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return JsonData.success("test validate");
-    }
+//    @RequestMapping("/validate.json")
+//    @ResponseBody
+//    public JsonData validate(TestVo vo) {
+//        log.info("validate");
+//        try {
+//            Map<String,String> map=BeanValidator.validateObject(vo);
+//            if(map!=null&&map.entrySet().size()>0){
+//                for(Map.Entry<String,String> entry:map.entrySet()){
+//                    log.info("{}->{}",entry.getKey(),entry.getValue());
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return JsonData.success("test validate");
+//    }
 
     /*
     http://localhost:8080/test/validate.json
@@ -90,14 +89,14 @@ public class TestController {
 //    }
 
     //http://localhost:8080/test/validate.json?id=1&msg=hello
-//    @RequestMapping("/validate.json")
-//    @ResponseBody
-//    public JsonData validate(TestVo vo) throws ParamException {
-//        log.info("validate");
-//        SysAclModuleMapper moduleMapper = ApplicationContextHelper.popBean(SysAclModuleMapper.class);
-//        SysAclModule module = moduleMapper.selectByPrimaryKey(1);
-//        log.info(JsonMapper.obj2String(module));
-//        BeanValidator.check(vo);
-//        return JsonData.success("test validate");
-//    }
+    @RequestMapping("/validate.json")
+    @ResponseBody
+    public JsonData validate(TestVo vo) throws ParamException {
+        log.info("validate");
+        SysAclModuleMapper moduleMapper = ApplicationContextHelper.popBean(SysAclModuleMapper.class);
+        SysAclModule module = moduleMapper.selectByPrimaryKey(1);
+        log.info(JsonMapper.obj2String(module));
+        BeanValidator.check(vo);
+        return JsonData.success("test validate");
+    }
 }

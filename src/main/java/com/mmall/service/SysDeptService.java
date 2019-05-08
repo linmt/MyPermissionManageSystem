@@ -83,7 +83,7 @@ public class SysDeptService {
         String newLevelPrefix = after.getLevel();
         String oldLevelPrefix = before.getLevel();
         if (!after.getLevel().equals(before.getLevel())) {
-            List<SysDept> deptList = sysDeptMapper.getChildDeptListByLevel(before.getLevel());
+            List<SysDept> deptList = sysDeptMapper.getChildDeptListByLevel(oldLevelPrefix+"."+before.getId());//0.1.？
             if (CollectionUtils.isNotEmpty(deptList)) {
                 for (SysDept dept : deptList) {
                     String level = dept.getLevel();

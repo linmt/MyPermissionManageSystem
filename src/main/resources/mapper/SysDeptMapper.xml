@@ -149,14 +149,14 @@
     select
     <include refid="Base_Column_List" />
     from sys_dept
-    WHERE level like #{level} || '.%'
+    WHERE level like #{level}||'.%'
   </select>
 
   <update id="batchUpdateLevel" parameterType="map">
     <foreach collection="sysDeptList" item="sysDept" separator=";">
       UPDATE sys_dept
-      SET level = #{dept.level}
-      WHERE id = #{dept.id}
+      SET level = #{sysDept.level}
+      WHERE id = #{sysDept.id}
     </foreach>
   </update>
 
