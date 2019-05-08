@@ -256,6 +256,7 @@
                         optionStr = "<option value=\"0\">-</option>";
                         recursiveRenderDeptSelect(deptList, 1);
                         $("#deptForm")[0].reset();
+                        //显示的列表如何隐藏？？？
                         $("#parentId").html(optionStr);
                         //选中当前部门
                         $("#deptId").val(deptId);
@@ -343,6 +344,7 @@
                 open: function(event, ui) {
                     //希望点击关闭的时候还要做其他操作，而不是直接关闭
                     $(".ui-dialog-titlebar-close", $(this).parent()).hide();
+                    //$(".ui-dialog-titlebar-close").parent().hide();
                     //什么都不选时的默认值
                     optionStr = "<option value=\"0\">-</option>";
                     recursiveRenderDeptSelect(deptList, 1);
@@ -385,6 +387,7 @@
                         blank += "∟";
                     }
                     //将对应的HTML拼接到optionStr
+                    //<option value="1">技术部</option>
                     optionStr += Mustache.render("<option value='{{id}}'>{{name}}</option>", {id: dept.id, name: blank + dept.name});
                     if (dept.deptList && dept.deptList.length > 0) {
                         recursiveRenderDeptSelect(dept.deptList, level + 1);
