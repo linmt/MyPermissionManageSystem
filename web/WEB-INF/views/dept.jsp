@@ -450,6 +450,12 @@
                         "bold": function() {
                             return function(text, render) {
                                 var status = render(text);
+                                console.info("ceshi"+text);
+                                console.info("ceshi"+render);
+                                //ceshi{{showStatus}}
+//                                ceshifunction subRender (template) {
+//                                    return self.render(template, context, partials);
+//                                }
                                 if (status == '有效') {
                                     return "<span class='label label-sm label-success'>有效</span>";
                                 } else if(status == '无效') {
@@ -499,11 +505,13 @@
                 buttons : {
                     "添加": function(e) {
                         e.preventDefault();
-                        updateUser(true, function (data) {
+                        updateUser(true,
+                            function (data) {
                             $("#dialog-user-form").dialog("close");
                             //更新信息，保证新增用户、修改用户后信息能实时显示
                             loadUserList(lastClickDeptId);
-                        }, function (data) {
+                        },
+                            function (data) {
                             showMessage("新增用户", data.msg, false);
                         })
                     },
@@ -522,7 +530,9 @@
                 success: function(result) {
                     if (result.ret) {
                         loadDeptTree();
+//                        console.info("ceshi"+successCallback);
                         if (successCallback) {
+//                            console.info("12"+successCallback);
                             successCallback(result);
                         }
                     } else {

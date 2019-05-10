@@ -70,7 +70,7 @@ public class SysAclModuleService {
         String newLevelPrefix = after.getLevel();
         String oldLevelPrefix = before.getLevel();
         if (!after.getLevel().equals(before.getLevel())) {
-            List<SysAclModule> aclModuleList = sysAclModuleMapper.getChildAclModuleListByLevel(before.getLevel());
+            List<SysAclModule> aclModuleList = sysAclModuleMapper.getChildAclModuleListByLevel(oldLevelPrefix+before.getId());
             if (CollectionUtils.isNotEmpty(aclModuleList)) {
                 for (SysAclModule aclModule : aclModuleList) {
                     String level = aclModule.getLevel();
