@@ -175,14 +175,17 @@ public class SysTreeService {
         if (CollectionUtils.isEmpty(aclDtoList)) {
             return Lists.newArrayList();
         }
+        //获得权限模块树
         List<AclModuleLevelDto> aclModuleLevelList = aclModuleTree();
 
+        //将权限点存成一个map，id=权限模块id   value=权限点
         Multimap<Integer, AclDto> moduleIdAclMap = ArrayListMultimap.create();
         for(AclDto acl : aclDtoList) {
             if (acl.getStatus() == 1) {
                 moduleIdAclMap.put(acl.getAclModuleId(), acl);
             }
         }
+        //权限模块树，权限点map
         bindAclsWithOrder(aclModuleLevelList, moduleIdAclMap);
         return aclModuleLevelList;
     }
@@ -193,7 +196,9 @@ public class SysTreeService {
         if (CollectionUtils.isEmpty(aclModuleLevelList)) {
             return;
         }
+        //遍历权限模块树
         for (AclModuleLevelDto dto : aclModuleLevelList) {
+            //获取该权限模块的权限点map，与模块绑定
             List<AclDto> aclDtoList = (List<AclDto>)moduleIdAclMap.get(dto.getId());
             if (CollectionUtils.isNotEmpty(aclDtoList)) {
                 Collections.sort(aclDtoList, aclSeqComparator);

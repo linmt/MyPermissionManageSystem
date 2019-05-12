@@ -275,6 +275,62 @@
             }
         }
 
+        // zTree
+        <!-- 树结构相关 开始 -->
+        var zTreeObj = [];         //实际中传给树形结构的数据
+        var modulePrefix = 'm_';  //前缀
+        var aclPrefix = 'a_';     //前缀
+        var nodeMap = {};          //存储相关的数据，为了生成zTreeObj中的数据
+
+        /*
+         enable：true / false 分别表示 显示 / 不显示 复选框或单选框
+         chkboxType：
+             Y 属性定义 checkbox 被勾选后的情况；
+             N 属性定义 checkbox 取消勾选后的情况；
+             "p" 表示操作会影响父级节点；
+             "s" 表示操作会影响子级节点。
+             请注意大小写，不要改变
+         chkDisabledInherit：
+            true 表示 新加入子节点时，自动继承父节点 chkDisabled = true 的属性。
+            false 表示 新加入子节点时，不继承父节点 chkDisabled 的属性。
+         autoCheckTrigger：true / false 分别表示 触发 / 不触发 事件回调函数
+         */
+        //https://www.cnblogs.com/shinhwazt/p/5828031.html
+        var setting = {
+            check: {
+                enable: true,
+                chkDisabledInherit: true,
+                chkboxType: {"Y": "ps", "N": "ps"}, //auto check 父节点 子节点
+                autoCheckTrigger: true
+            },
+            data: {
+                simpleData: {
+                    enable: true,  //表示使用简单数据模式  var nodes = [{name:"第一层级",id:0,pId:null},{name:"第二层级",id:1,pId:0},{name:"第一层级",id:2,pId:0}]
+                    rootPId: 0     //pid为0的表示根节点
+                    //idKey:"id",   //设置之后id为在简单数据模式中的父子节点关联的桥梁
+                    //pidKey:"pId", //设置之后pid为在简单数据模式中的父子节点关联的桥梁和id互相对应
+                }
+            },
+            callback: {
+                onClick: onClickTreeNode
+            }
+        };
+
+        //每次点击节点的时候都尝试打开节点，相当于树形结构不停的展开叠起
+        /*
+         treeObj = $.fn.zTree.init($("#treeDemo"), setting);
+         在id为treeDemo的元素上使用setting设置对象，初始化为一个ztree对象，并且将该部分存放在变量treeObj中。
+
+         zTree = $.fn.zTree.getZTreeObj("treeDemo");
+         使用ztree的getZTreeObj方法，获取id为treeDemo的元素上的ztree对象，并将该部分存放在变量zTree中。
+
+         这两个变量其实是相等的。区别在于第一个方法是初始化后就寄存在一个变量里。而第二个方法可以在需要控制zTree对象的时候再灵活获取，避免了全局变量泄露。
+        */
+        function onClickTreeNode(e, treeId, treeNode) { // 绑定单击事件
+            var zTree = $.fn.zTree.getZTreeObj("roleAclTree");
+            zTree.expandNode(treeNode);
+        }
+
         function loadRoleAcl(selectedRoleId) {
             //-1是默认的值，表示没有选中
             if (selectedRoleId == -1) {
@@ -315,6 +371,20 @@
         }
 
         //将权限点信息放在zTreeObj，权限模块信息放入nodeMap
+        /*
+         传入权限模块树
+         遍历每一个模块
+            判断这个模块是否选中
+            遍历模块下的权限点
+                zTreeObj.push  权限点ID+模块ID+权限点名+当前用户是否包含该权限点+当前角色是否包含该权限点
+                当前角色包含该权限点，则该模块被选中
+
+            判断模块下是否有子模块  或  模块下是否有权限点
+                将模块添加到nodeMap，key是模块ID，value是模块ID+父模块ID+模块名+模块是否被选中
+                取到该模块的value
+                若模块被选中，递归选中其父模块
+            如果模块下有子模块，则递归调用
+         */
         function recursivePrepareTreeData(aclModuleList) {
             // prepare nodeMap
             if (aclModuleList && aclModuleList.length > 0) {
@@ -328,8 +398,8 @@
                                 id: aclPrefix + acl.id,
                                 pId: modulePrefix + acl.aclModuleId,     //挂在那个模块下
                                 name: acl.name + ((acl.type == 1) ? '(菜单)' : ''),
-                                chkDisabled: !acl.hasAcl,   //？？？
-                                checked: acl.checked,   //是否被选中
+                                chkDisabled: !acl.hasAcl,   //是否有权限操作  当前用户是否包含该权限点
+                                checked: acl.checked,   //是否被选中   当前角色是否包含该权限点
                                 dataId: acl.id
                             });
                             //true代表下面有权限点，被选中，是否允许打开
@@ -367,50 +437,6 @@
                     recursivePrepareTreeData(aclModule.aclModuleList);
                 });
             }
-        }
-
-        // zTree
-        <!-- 树结构相关 开始 -->
-        var zTreeObj = [];         //实际中传给树形结构的数据
-        var modulePrefix = 'm_';  //前缀
-        var aclPrefix = 'a_';     //前缀
-        var nodeMap = {};          //存储相关的数据，为了生成zTreeObj中的数据
-
-        /*
-         enable：true / false 分别表示 显示 / 不显示 复选框或单选框
-         chkboxType：
-             Y 属性定义 checkbox 被勾选后的情况；
-             N 属性定义 checkbox 取消勾选后的情况；
-             "p" 表示操作会影响父级节点；
-             "s" 表示操作会影响子级节点。
-             请注意大小写，不要改变
-         chkDisabledInherit：
-             true 表示 新加入子节点时，自动继承父节点 chkDisabled = true 的属性。
-             false 表示 新加入子节点时，不继承父节点 chkDisabled 的属性。
-         autoCheckTrigger：true / false 分别表示 触发 / 不触发 事件回调函数
-         */
-        var setting = {
-            check: {
-                enable: true,
-                chkDisabledInherit: true,
-                chkboxType: {"Y": "ps", "N": "ps"}, //auto check 父节点 子节点
-                autoCheckTrigger: true
-            },
-            data: {
-                simpleData: {
-                    enable: true,
-                    rootPId: 0
-                }
-            },
-            callback: {
-                onClick: onClickTreeNode
-            }
-        };
-
-        //每次点击节点的时候都尝试打开节点，相当于树形结构不停的展开叠起
-        function onClickTreeNode(e, treeId, treeNode) { // 绑定单击事件
-            var zTree = $.fn.zTree.getZTreeObj("roleAclTree");
-            zTree.expandNode(treeNode);
         }
 
         //获取当前ztree中选中节点的id
@@ -466,6 +492,7 @@
             }
         });
 
+        //https://www.virtuosoft.eu/code/bootstrap-duallistbox/
         function loadRoleUser(selectedRoleId) {
             $.ajax({
                 url: "/sys/role/users.json",
