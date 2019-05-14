@@ -1,9 +1,7 @@
 package com.mmall.controller;
 
 import com.mmall.model.SysUser;
-import com.mmall.param.UserParam;
 import com.mmall.service.SysUserService;
-import com.mmall.util.MD5Util;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -16,13 +14,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
 
 @Controller
 public class LoginController {
 
     @Resource
     private SysUserService sysUserService;
+
+    Subject subject;
 
     @RequestMapping("/login.page")
     public void login(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -36,7 +35,7 @@ public class LoginController {
 
         try {
             //1.得到Subject
-            Subject subject = SecurityUtils.getSubject();
+            subject = SecurityUtils.getSubject();
             //2.调用登录方法
             UsernamePasswordToken token = new UsernamePasswordToken(username, password);
             subject.login(token);//当这一代码执行时，就会自动跳入到AuthRealm中认证方法
@@ -71,6 +70,7 @@ public class LoginController {
     @RequestMapping("/logout.page")
     public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.getSession().invalidate();
+        subject.logout();
         String path = "signin.jsp";
         response.sendRedirect(path);
     }

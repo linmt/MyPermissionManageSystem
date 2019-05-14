@@ -94,4 +94,8 @@ public class SysUserService {
     public List<SysUser> getAll() {
         return sysUserMapper.getAll();
     }
+
+    public List<SysUser> find(String username) {
+        return sysUserMapper.find(username);
+    }
 }

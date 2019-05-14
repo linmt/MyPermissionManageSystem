@@ -214,4 +214,10 @@
     SELECT <include refid="Base_Column_List" />
     FROM sys_user
   </select>
+
+  <select id="find" parameterType="string" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    FROM sys_user
+    WHERE username = #{username}
+  </select>
 </mapper>
